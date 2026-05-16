@@ -1,0 +1,19 @@
+# PHP files (deprecated - migrated to HTML/JS + Firebase)
+*.php
+
+# JSON data (now in Firestore)
+# data.json - keeping for seed reference
+
+# Excel files
+*.xlsx
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+
+# Node modules (if any)
+node_modules/

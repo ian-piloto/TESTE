@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>INVENTÁRIO | SENAI</title>
+    <meta name="description" content="Inventário completo de equipamentos - SENAI">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" type="image/png" href="image.png">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        .loading-spinner {
+            animation: spin 1s linear infinite;
+        }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.4.0/exceljs.min.js"></script>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div style="display: flex; align-items: center; justify-content: center; gap: 15px;">
+                <a href="index.html" style="color: white;"><i data-lucide="arrow-left"></i></a>
+                <h1 style="margin: 0; font-size: 1.4rem;">Inventário Completo</h1>
+            </div>
+        </div>
+    </header>
+
+    <main class="container">
+        <div style="display: flex; gap: 10px; margin-bottom: 2rem; align-items: stretch;" class="animate-fade">
+            <div class="search-container" style="margin-bottom: 0; flex-grow: 1;">
+                <i data-lucide="search" class="search-icon"></i>
+                <input type="text" id="searchInput" class="search-input" placeholder="Buscar por ID, tipo ou localização..." onkeyup="filterItems()">
+            </div>
+            <a href="#" id="exportBtn" class="btn btn-primary" style="display: flex; align-items: center; justify-content: center; gap: 8px; white-space: nowrap; margin-bottom: 0; padding: 0 1.5rem;">
+                <i data-lucide="file-spreadsheet"></i> Exportar
+            </a>
+        </div>
+
+        <!-- Loading State -->
+        <div id="loading-state" class="card" style="text-align: center;">
+            <i data-lucide="loader" class="icon-large loading-spinner"></i>
+            <h2>Carregando Inventário...</h2>
+            <p style="color: #666;">Buscando dados do Firestore...</p>
+        </div>
+
+        <div class="inventory-list" id="inventoryList" style="display: none;"></div>
+
+        <div id="noResults" style="display: none; text-align: center; padding: 3rem; color: #888;">
+            <i data-lucide="search-x" style="width: 48px; height: 48px; margin-bottom: 1rem;"></i>
+            <p>Nenhum equipamento encontrado com esses termos.</p>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 SENAI - Euclides Facchini de Votuporanga</p>
+    </footer>
+
+    <script type="module">
+        import { getAllItems } from './firebase-config.js';
+
+        async function loadInventory() {
+            try {
+                const items = await getAllItems();
+                
+                // Sort by ID
+                const sortedKeys = Object.keys(items).sort();
+                
+                const listEl = document.getElementById('inventoryList');
+                let html = '';
+
+                for (const id of sortedKeys) {
+                    const data = items[id];
+                    
+                    let tagClass = 'tag-outros';
+                    const tipoLower = (data.tipo || '').toLowerCase();
+                    if (tipoLower.includes('água') || tipoLower.includes('agua')) tagClass = 'tag-agua';
+                    else if (tipoLower.includes('pqs') || tipoLower.includes('pó')) tagClass = 'tag-pqs';
+                    else if (tipoLower.includes('co2')) tagClass = 'tag-co2';
+
+                    const firstWord = (data.tipo || '').split(' ')[0];
+                    
+                    const isInspected = data.ultima_inspecao && data.ultima_inspecao !== 'Pendente' && data.responsavel;
+                    const statusIcon = isInspected 
+                        ? '<i data-lucide="check-circle-2" style="color: #28a745; width: 20px; height: 20px;"></i>'
+                        : '<i data-lucide="x-circle" style="color: #dc3545; width: 20px; height: 20px;"></i>';
+
+                    html += `
+                        <a href="view.html?id=${encodeURIComponent(id)}&from=inventory" class="inventory-item animate-fade">
+                            <div class="item-info">
+                                <span class="item-id">${id}</span>
+                                <span class="item-type">${data.tipo || ''}</span>
+                                <span class="item-location">${data.localizacao || ''}</span>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 10px;">
+                                <span class="badge-tag ${tagClass}">${firstWord}</span>
+                                ${statusIcon}
+                            </div>
+                        </a>
+                    `;
+                }
+
+                listEl.innerHTML = html;
+                document.getElementById('loading-state').style.display = 'none';
+                listEl.style.display = 'flex';
+                lucide.createIcons();
+                
+                // Store items for export
+                window.inventoryItems = items;
+            } catch (error) {
+                console.error('Erro ao carregar inventário:', error);
+                document.getElementById('loading-state').innerHTML = `
+                    <i data-lucide="alert-circle" class="icon-large" style="color: #dc3545;"></i>
+                    <h2>Erro ao Carregar</h2>
+                    <p style="color: #666;">Não foi possível carregar os dados. Verifique sua conexão.</p>
+                `;
+                lucide.createIcons();
+            }
+        }
+
+        loadInventory();
+    </script>
+
+    <script>
+        lucide.createIcons();
+
+        function filterItems() {
+            const input = document.getElementById('searchInput');
+            const filter = input.value.toLowerCase();
+            const list = document.getElementById('inventoryList');
+            const items = list.getElementsByClassName('inventory-item');
+            let visibleCount = 0;
+
+            for (let i = 0; i < items.length; i++) {
+                const text = items[i].textContent.toLowerCase();
+                if (text.includes(filter)) {
+                    items[i].style.display = "flex";
+                    visibleCount++;
+                } else {
+                    items[i].style.display = "none";
+                }
+            }
+
+            document.getElementById('noResults').style.display = visibleCount === 0 ? 'block' : 'none';
+        }
+
+        document.getElementById('exportBtn').addEventListener('click', function(e) {
+            e.preventDefault();
+            const name = localStorage.getItem('inspectorName');
+            if (!name || name.trim() === '') {
+                showModal('Identificação Necessária', 'Você precisa se identificar no Painel Inicial antes de gerar um relatório oficial.', 'warning', 'alert', () => {
+                    window.location.href = 'index.html';
+                });
+            } else {
+                generateExcelReport(name);
+            }
+        });
+
+        async function generateExcelReport(responsavel) {
+            const items = window.inventoryItems;
+            if (!items) {
+                showModal('Erro', 'Dados do inventário ainda não foram carregados.', 'error');
+                return;
+            }
+
+            const sortedKeys = Object.keys(items).sort();
+            const today = new Date().toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric' });
+
+            // Agrupar itens por prefixo do ID (Coluna B)
+            const groups = {};
+            sortedKeys.forEach(id => {
+                let prefix = id.match(/^([A-Za-z]+)/)?.[1] || 'OUTROS';
+                // IDs puramente numéricos vão para "PONTO DE ENCONTRO"
+                if (/^\d+$/.test(id)) prefix = 'PONTO DE ENCONTRO';
+                
+                // Especial para PORTA: separar por tipo
+                if (prefix === 'PORTA') {
+                    const tipo = (items[id].tipo || '').toLowerCase();
+                    if (tipo.includes('fuga')) {
+                        prefix = 'ROTA DE FUGA';
+                    } else if (tipo.includes('corta-fogo') || tipo.includes('corta fogo')) {
+                        prefix = 'PORTA CORTA-FOGO';
+                    }
+                }
+                
+                if (!groups[prefix]) groups[prefix] = [];
+                groups[prefix].push(id);
+            });
+
+            // Mapeamento e Ordem das Abas
+            const sheetOrder = ['AGUA', 'PQS -1', 'PQS -2', 'CO²', 'HIDRANTES', 'ROTAS DE FUGA', 'PORTAS CORTA FOGO', 'PONTOS DE ENCONTRO', 'OUTROS'];
+            const finalGroups = {};
+
+            for (const prefix in groups) {
+                if (prefix === 'A') finalGroups['AGUA'] = groups[prefix];
+                else if (prefix === 'CO' || prefix.includes('CO2')) finalGroups['CO²'] = groups[prefix];
+                else if (prefix === 'H') finalGroups['HIDRANTES'] = groups[prefix];
+                else if (prefix === 'P') {
+                    const mid = Math.ceil(groups[prefix].length / 2);
+                    finalGroups['PQS -1'] = groups[prefix].slice(0, mid);
+                    finalGroups['PQS -2'] = groups[prefix].slice(mid);
+                } 
+                else if (prefix === 'ROTA DE FUGA') finalGroups['ROTAS DE FUGA'] = groups[prefix];
+                else if (prefix === 'PONTO') finalGroups['PONTOS DE ENCONTRO'] = groups[prefix];
+                else if (prefix === 'PCF' || prefix === 'PORTA CORTA-FOGO') finalGroups['PORTAS CORTA FOGO'] = groups[prefix];
+                else if (prefix === 'PONTO DE ENCONTRO') finalGroups['PONTOS DE ENCONTRO'] = groups[prefix];
+                else finalGroups[prefix] = groups[prefix];
+            }
+
+            const workbook = new ExcelJS.Workbook();
+
+            for (const sheetName of sheetOrder) {
+                const itemsInSheet = finalGroups[sheetName];
+                if (!itemsInSheet || itemsInSheet.length === 0) continue;
+                
+                const sheet = workbook.addWorksheet(sheetName);
+
+                // --- DEFINIR COLUNAS E CABEÇALHOS DINÂMICOS ---
+                const isHidrante = sheetName === 'HIDRANTES';
+                const isRota = sheetName === 'ROTAS DE FUGA';
+                const isPorta = sheetName === 'PORTAS CORTA FOGO';
+                const isPonto = sheetName === 'PONTOS DE ENCONTRO';
+
+                let groupLabel = 'EXTINTORES PORTÁTEIS';
+                if (isHidrante) groupLabel = 'HIDRANTES';
+                else if (isRota || isPorta || isPonto) groupLabel = sheetName;
+
+                let headers = [];
+                let colConfigs = [];
+
+                if (isHidrante) {
+                    headers = ['TIPO', 'NÚMERO', 'LOCALIZAÇÃO', 'MANGUEIRA', 'ESGUICHO', 'CHAVE "STORZ"', 'SINALIZAÇÃO', 'VAL. HIDROSTÁTICO', 'RESPONSÁVEL', 'OBSERVAÇÃO'];
+                    colConfigs = [{ width: 8 }, { width: 22 }, { width: 40 }, { width: 14 }, { width: 14 }, { width: 16 }, { width: 14 }, { width: 20 }, { width: 18 }, { width: 30 }];
+                } else if (isRota) {
+                    headers = ['TIPO', 'NÚMERO', 'LOCALIZAÇÃO', 'DESOBSTRUÍDAS', 'SINALIZADAS', 'RESPONSÁVEL', 'OBSERVAÇÃO'];
+                    colConfigs = [{ width: 8 }, { width: 22 }, { width: 40 }, { width: 18 }, { width: 18 }, { width: 18 }, { width: 30 }];
+                } else if (isPorta) {
+                    headers = ['TIPO', 'NÚMERO', 'LOCALIZAÇÃO', 'DESOBSTRUÍDAS', 'DESTRANCADAS', 'RESPONSÁVEL', 'OBSERVAÇÃO'];
+                    colConfigs = [{ width: 8 }, { width: 22 }, { width: 40 }, { width: 18 }, { width: 18 }, { width: 18 }, { width: 30 }];
+                } else if (isPonto) {
+                    headers = ['TIPO', 'NÚMERO', 'LOCALIZAÇÃO', 'SINALIZADOS', 'RESPONSÁVEL', 'OBSERVAÇÃO'];
+                    colConfigs = [{ width: 8 }, { width: 22 }, { width: 45 }, { width: 16 }, { width: 18 }, { width: 35 }];
+                } else {
+                    headers = ['TIPO', 'NÚMERO', 'LOCALIZAÇÃO', 'LACRE', 'ANEL', 'PINO', 'INMETRO', 'SINALIZAÇÃO', 'RECARGA', 'HIDROSTÁTICO', 'RESPONSÁVEL', 'OBSERVAÇÃO'];
+                    colConfigs = [{ width: 8 }, { width: 22 }, { width: 40 }, { width: 10 }, { width: 10 }, { width: 12 }, { width: 15 }, { width: 14 }, { width: 18 }, { width: 20 }, { width: 18 }, { width: 30 }];
+                }
+
+                const lastColIndex = headers.length;
+                const lastColLetter = String.fromCharCode(64 + lastColIndex);
+                sheet.columns = colConfigs;
+
+                // --- LINHA 1: TÍTULO AZUL (DINÂMICO) ---
+                sheet.mergeCells(`A1:${lastColLetter}1`);
+                const titleCell = sheet.getCell('A1');
+                titleCell.value = 'SESI SENAI   |   FICHA DE INSPEÇÃO DE EQUIPAMENTOS DE COMBATE A INCÊNDIO E ROTAS DE FUGA';
+                titleCell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF0000FF' } };
+                titleCell.font = { bold: true, color: { argb: 'FFFFFFFF' }, size: 14 };
+                titleCell.alignment = { vertical: 'middle', horizontal: 'center' };
+                sheet.getRow(1).height = 35;
+
+                // --- LINHA 2: UNIDADE E DATA (DINÂMICO) ---
+                const midSplit = Math.max(3, Math.floor(lastColIndex * 0.6));
+                const midLetter = String.fromCharCode(64 + midSplit);
+                const nextLetter = String.fromCharCode(64 + midSplit + 1);
+
+                sheet.mergeCells(`A2:${midLetter}2`);
+                const unitCell = sheet.getCell('A2');
+                unitCell.value = 'UNIDADE: CFP:850 - SENAI EUCLIDES FACCHINI DE VOTUPORANGA';
+                unitCell.font = { bold: true, size: 9 };
+                unitCell.alignment = { vertical: 'middle', horizontal: 'left' };
+
+                sheet.mergeCells(`${nextLetter}2:${lastColLetter}2`);
+                const dateCell = sheet.getCell(nextLetter + '2');
+                dateCell.value = 'DATA: ' + today;
+                dateCell.font = { bold: true, size: 9 };
+                dateCell.alignment = { vertical: 'middle', horizontal: 'right' };
+                sheet.getRow(2).height = 25;
+
+                // --- LINHA 3 & 4: CABEÇALHO ---
+                sheet.getRow(3).height = 25;
+                const headerRow = sheet.getRow(4);
+                headerRow.values = headers;
+                headerRow.height = 40;
+                headerRow.font = { bold: true, color: { argb: 'FFFFFFFF' }, size: 9 };
+                headerRow.alignment = { vertical: 'middle', horizontal: 'center', wrapText: true };
+                
+                // Estilizar Linha 4
+                for (let i = 1; i <= lastColIndex; i++) {
+                    const cell = headerRow.getCell(i);
+                    cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF0000FF' } };
+                    cell.border = { top: {style:'thin'}, left: {style:'thin'}, bottom: {style:'thin'}, right: {style:'thin'} };
+                }
+
+                // Título do Grupo (Linha 3 - DINÂMICO)
+                const penultColLetter = String.fromCharCode(64 + lastColIndex - 1);
+                ['A3', 'B3', 'C3', penultColLetter + '3', lastColLetter + '3'].forEach(ref => {
+                    const cell = sheet.getCell(ref);
+                    cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF0000FF' } };
+                    cell.border = { top: {style:'thin'}, left: {style:'thin'}, bottom: {style:'thin'}, right: {style:'thin'} };
+                });
+
+                if (lastColIndex > 5) {
+                    const antepenultColLetter = String.fromCharCode(64 + lastColIndex - 2);
+                    sheet.mergeCells(`D3:${antepenultColLetter}3`);
+                    const gCell = sheet.getCell('D3');
+                    gCell.value = groupLabel;
+                    gCell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF0000FF' } };
+                    gCell.font = { bold: true, color: { argb: 'FFFFFFFF' } };
+                    gCell.alignment = { vertical: 'middle', horizontal: 'center' };
+                    gCell.border = { top: {style:'thin'}, left: {style:'thin'}, bottom: {style:'thin'}, right: {style:'thin'} };
+                } else if (lastColIndex === 5) {
+                    const gCell = sheet.getCell('D3');
+                    gCell.value = groupLabel;
+                    gCell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF0000FF' } };
+                    gCell.font = { bold: true, color: { argb: 'FFFFFFFF' } };
+                    gCell.alignment = { vertical: 'middle', horizontal: 'center' };
+                    gCell.border = { top: {style:'thin'}, left: {style:'thin'}, bottom: {style:'thin'}, right: {style:'thin'} };
+                }
+
+                itemsInSheet.forEach(id => {
+                    const data = items[id];
+                    const tStr = (data.tipo || '').toLowerCase();
+                    let tLetra = 'S';
+                    if (tStr.includes('extintor')) tLetra = 'E';
+                    else if (tStr.includes('hidrante')) tLetra = 'H';
+                    else if (tStr.includes('porta')) tLetra = 'P';
+                    else if (tStr.includes('rota') || tStr.includes('fuga')) tLetra = 'R';
+
+                    let lacre = '', anel = '', pino = '', inmetro = '', sinalizacao = '', recarga = '', hidrostatico = '';
+                    const isIns = data.ultima_inspecao && data.ultima_inspecao !== 'Pendente';
+
+                    if (isIns && data.states) {
+                        lacre = data.states.lacre === 'ok' ? 'OK' : 'Faltando';
+                        anel = data.states.anel === 'ok' ? 'OK' : 'Faltando';
+                        pino = data.states.pino === 'ok' ? 'OK' : 'Faltando';
+                        inmetro = data.states.inmetro === 'ok' ? 'OK' : 'Faltando';
+                        sinalizacao = data.states.sinalizacao === 'ok' ? 'OK' : 'Faltando';
+                        recarga = data.states.recarga === 'ok' ? 'OK' : 'Faltando';
+                        hidrostatico = data.states.hidrostatico === 'ok' ? 'OK' : 'Faltando';
+                    } else if (isIns && data.status === 'OK' && !data.states) {
+                        lacre = anel = pino = inmetro = sinalizacao = recarga = hidrostatico = 'OK';
+                    } else {
+                        lacre = anel = pino = inmetro = sinalizacao = recarga = hidrostatico = '-';
+                    }
+
+                    const resp = isIns && data.responsavel ? data.responsavel : (isIns ? responsavel : '');
+                    const obs = data.observacao || (data.status && data.status !== 'OK' ? data.status : '');
+
+                    let rowValues = [];
+                    if (isHidrante) {
+                        rowValues = [tLetra, id, data.localizacao || '', lacre, anel, pino, sinalizacao, hidrostatico, resp, obs];
+                    } else if (isRota || isPorta) {
+                        rowValues = [tLetra, id, data.localizacao || '', lacre, sinalizacao, resp, obs];
+                    } else if (isPonto) {
+                        rowValues = [tLetra, id, data.localizacao || '', sinalizacao, resp, obs];
+                    } else {
+                        rowValues = [tLetra, id, data.localizacao || '', lacre, anel, pino, inmetro, sinalizacao, recarga, hidrostatico, resp, obs];
+                    }
+
+                    const row = sheet.addRow(rowValues);
+                    row.eachCell((cell) => {
+                        cell.border = { top: {style:'thin'}, left: {style:'thin'}, bottom: {style:'thin'}, right: {style:'thin'} };
+                        cell.alignment = { vertical: 'middle', horizontal: 'center' };
+                    });
+                    row.getCell(3).alignment = { vertical: 'middle', horizontal: 'left' }; // Localização
+                    row.getCell(rowValues.length).alignment = { vertical: 'middle', horizontal: 'left' }; // Observação
+                });
+            }
+
+            const buffer = await workbook.xlsx.writeBuffer();
+            const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `Relatorio_Inspecao_${new Date().toISOString().split('T')[0]}.xlsx`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        function showModal(title, message, icon = 'info', type = 'alert', onConfirm = null) {
+            const modal = document.getElementById('customModal');
+            const titleEl = document.getElementById('modalTitle');
+            const messageEl = document.getElementById('modalMessage');
+            const iconEl = document.getElementById('modalIcon');
+            const confirmBtn = document.getElementById('modalConfirmBtn');
+            const cancelBtn = document.getElementById('modalCancelBtn');
+
+            titleEl.innerText = title;
+            messageEl.innerText = message;
+            
+            let iconHtml = '';
+            if (icon === 'success') iconHtml = '<i data-lucide="check-circle-2" style="width: 48px; height: 48px; color: #28a745;"></i>';
+            else if (icon === 'error') iconHtml = '<i data-lucide="alert-circle" style="width: 48px; height: 48px; color: #dc3545;"></i>';
+            else if (icon === 'warning') iconHtml = '<i data-lucide="alert-triangle" style="width: 48px; height: 48px; color: #f39c12;"></i>';
+            else iconHtml = '<i data-lucide="info" style="width: 48px; height: 48px; color: #007bff;"></i>';
+            
+            iconEl.innerHTML = iconHtml;
+            lucide.createIcons();
+
+            if (type === 'confirm') {
+                cancelBtn.style.display = 'flex';
+                confirmBtn.innerText = 'Confirmar';
+            } else {
+                cancelBtn.style.display = 'none';
+                confirmBtn.innerText = 'OK';
+            }
+
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+
+            const close = () => {
+                modal.classList.remove('active');
+                document.body.style.overflow = 'auto';
+            };
+
+            confirmBtn.onclick = () => {
+                close();
+                if (onConfirm) onConfirm(true);
+            };
+
+            cancelBtn.onclick = () => {
+                close();
+                if (onConfirm) onConfirm(false);
+            };
+        }
+    </script>
+
+    <!-- Modal Genérico -->
+    <div id="customModal" class="modal-overlay">
+        <div class="modal-content" style="max-width: 400px; text-align: center;">
+            <div id="modalIcon" style="margin-bottom: 1rem; display: flex; justify-content: center;"></div>
+            <h2 id="modalTitle" style="font-size: 1.4rem; color: var(--senai-primary); margin-bottom: 0.5rem;"></h2>
+            <p id="modalMessage" style="color: #666; margin-bottom: 1.5rem;"></p>
+            <div id="modalActions" style="display: flex; gap: 10px; flex-direction: column;">
+                <button id="modalConfirmBtn" class="btn btn-primary" style="margin-top: 0;">Confirmar</button>
+                <button id="modalCancelBtn" class="btn" style="background: #eee; color: #333; display: none; margin-top: 0;">Cancelar</button>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

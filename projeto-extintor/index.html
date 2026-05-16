@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SISTEMA DE EXTINTORES | SENAI</title>
+    <meta name="description" content="Sistema de controle e inspeção de extintores - SENAI">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" type="image/png" href="image.png">
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>Controle de Extintores</h1>
+            <p>Unidade SENAI - Gestão de Ativos</p>
+        </div>
+    </header>
+
+    <main class="container">
+        <div class="card animate-fade">
+            <i data-lucide="scan-line" class="icon-large"></i>
+            <h2>Nova Inspeção</h2>
+            <p style="margin-bottom: 20px; color: #666;">Escaneie o QR Code do reservatório para iniciar a verificação técnica.</p>
+            <button onclick="openNameModal()" class="btn btn-primary" style="width: 100%; border: none; font-size: 1rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                <i data-lucide="camera"></i> Abrir Scanner
+            </button>
+        </div>
+
+        <!-- Modal do Nome do Responsável -->
+        <div id="nameModal" class="modal-overlay">
+            <div class="modal-content" style="max-width: 400px;">
+                <div class="modal-header">
+                    <h2 style="font-size: 1.2rem; color: var(--senai-primary);">Identificação do Inspetor</h2>
+                    <button onclick="closeNameModal()" style="background:none; border:none; cursor:pointer;">
+                        <i data-lucide="x" style="color: #666;"></i>
+                    </button>
+                </div>
+                
+                <div style="padding: 1rem 0;">
+                    <p style="font-size: 0.9rem; color: #666; margin-bottom: 15px;">Por favor, informe seu nome para registrar a responsabilidade da inspeção.</p>
+                    
+                    <div style="margin-bottom: 1.5rem;">
+                        <label for="inspectorName" style="display: block; font-weight: 600; margin-bottom: 5px; color: #333;">Nome Completo:</label>
+                        <input type="text" id="inspectorName" class="search-input" placeholder="Ex: João Silva" style="width: 100%; margin: 0; box-sizing: border-box; padding: 10px; border: 1px solid #ccc; border-radius: 4px;">
+                    </div>
+
+                    <button class="btn btn-primary" style="width: 100%; border: none; cursor: pointer;" onclick="saveNameAndScan()">
+                        <i data-lucide="check-circle-2"></i> Confirmar e Escanear
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="card animate-fade" style="animation-delay: 0.1s;">
+            <i data-lucide="database" class="icon-large" style="color: #666;"></i>
+            <h2>Resumo da Unidade</h2>
+            <div id="loading-summary" style="padding: 2rem; color: #888;">
+                <i data-lucide="loader" class="icon-large" style="animation: spin 1s linear infinite;"></i>
+                <p>Carregando dados...</p>
+            </div>
+            <ul class="details-list" id="summary-list" style="display: none;">
+                <li>
+                    <span>Total de Equipamentos</span>
+                    <span id="total-count">0</span>
+                </li>
+                <li>
+                    <span>Inspecionados</span>
+                    <span style="color: #28a745; font-weight: bold;" id="inspected-count">0</span>
+                </li>
+                <li>
+                    <span>Alertas de Manutenção</span>
+                    <span id="alerts-badge" class="status-badge status-ok">0 Alertas</span>
+                </li>
+            </ul>
+            <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 1rem;">
+                <a href="inventory.html" class="btn" style="background: #eee; color: #333; text-decoration: none; text-align: center;">
+                    <i data-lucide="list" style="width: 16px; vertical-align: middle;"></i> Ver Inventário Completo
+                </a>
+                <button onclick="confirmReset()" class="btn" style="background: #fff; color: #dc3545; border: 1px solid #dc3545; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                    <i data-lucide="refresh-cw" style="width: 16px;"></i> Reiniciar Ciclo de Inspeções
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 SENAI - Tecnologia e Inovação</p>
+    </footer>
+
+    <script type="module">
+        import { getAllItems, resetAllInspections } from './firebase-config.js';
+        
+        // Load summary data from Firestore
+        async function loadSummary() {
+            try {
+                const items = await getAllItems();
+                const total = Object.keys(items).length;
+                let inspected = 0;
+                let alerts = 0;
+
+                for (const item of Object.values(items)) {
+                    if (item.ultima_inspecao && item.ultima_inspecao !== 'Pendente' && item.responsavel) {
+                        inspected++;
+                    }
+                    if (item.status && item.status !== 'OK') {
+                        alerts++;
+                    }
+                }
+
+                document.getElementById('total-count').textContent = total;
+                document.getElementById('inspected-count').textContent = inspected;
+                
+                const alertsBadge = document.getElementById('alerts-badge');
+                alertsBadge.textContent = `${alerts} ${alerts === 1 ? 'Alerta' : 'Alertas'}`;
+                alertsBadge.className = `status-badge ${alerts > 0 ? 'status-warning' : 'status-ok'}`;
+                
+                document.getElementById('loading-summary').style.display = 'none';
+                document.getElementById('summary-list').style.display = 'block';
+            } catch (error) {
+                console.error('Erro ao carregar dados:', error);
+                document.getElementById('loading-summary').innerHTML = '<p style="color: #dc3545;">Erro ao carregar dados. Verifique a conexão.</p>';
+            }
+        }
+
+        loadSummary();
+
+        // Expose functions to global scope for onclick handlers
+        window.resetAllInspections = resetAllInspections;
+        window.loadSummary = loadSummary;
+    </script>
+
+    <script>
+        lucide.createIcons();
+
+        function openNameModal() {
+            const currentName = localStorage.getItem('inspectorName') || '';
+            document.getElementById('inspectorName').value = currentName;
+            document.getElementById('nameModal').classList.add('active');
+            document.body.style.overflow = 'hidden';
+            
+            setTimeout(() => {
+                document.getElementById('inspectorName').focus();
+            }, 100);
+        }
+
+        function closeNameModal() {
+            document.getElementById('nameModal').classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+
+        function saveNameAndScan() {
+            const name = document.getElementById('inspectorName').value.trim();
+            if (name === '') {
+                showModal('Atenção', 'O nome do responsável é obrigatório para iniciar a inspeção.', 'warning');
+                return;
+            }
+            
+            localStorage.setItem('inspectorName', name);
+            closeNameModal();
+            window.location.href = 'scanner.html';
+        }
+
+        function confirmReset() {
+            showModal(
+                'Reiniciar Ciclo', 
+                'ATENÇÃO: Isso irá marcar todos os extintores como PENDENTES e remover os dados da inspeção atual. Deseja continuar?', 
+                'warning', 
+                'confirm', 
+                async (confirmed) => {
+                    if (confirmed) {
+                        try {
+                            await window.resetAllInspections();
+                            showModal('Sucesso', 'Ciclo de inspeções reiniciado com sucesso!', 'success', 'alert', () => {
+                                window.location.reload();
+                            });
+                        } catch (error) {
+                            console.error('Error:', error);
+                            showModal('Erro', 'Erro ao resetar: ' + error.message, 'error');
+                        }
+                    }
+                }
+            );
+        }
+
+        function showModal(title, message, icon = 'info', type = 'alert', onConfirm = null) {
+            const modal = document.getElementById('customModal');
+            const titleEl = document.getElementById('modalTitle');
+            const messageEl = document.getElementById('modalMessage');
+            const iconEl = document.getElementById('modalIcon');
+            const confirmBtn = document.getElementById('modalConfirmBtn');
+            const cancelBtn = document.getElementById('modalCancelBtn');
+
+            titleEl.innerText = title;
+            messageEl.innerText = message;
+            
+            let iconHtml = '';
+            if (icon === 'success') iconHtml = '<i data-lucide="check-circle-2" style="width: 48px; height: 48px; color: #28a745;"></i>';
+            else if (icon === 'error') iconHtml = '<i data-lucide="alert-circle" style="width: 48px; height: 48px; color: #dc3545;"></i>';
+            else if (icon === 'warning') iconHtml = '<i data-lucide="alert-triangle" style="width: 48px; height: 48px; color: #f39c12;"></i>';
+            else iconHtml = '<i data-lucide="info" style="width: 48px; height: 48px; color: #007bff;"></i>';
+            
+            iconEl.innerHTML = iconHtml;
+            lucide.createIcons();
+
+            if (type === 'confirm') {
+                cancelBtn.style.display = 'flex';
+                confirmBtn.innerText = 'Confirmar';
+            } else {
+                cancelBtn.style.display = 'none';
+                confirmBtn.innerText = 'OK';
+            }
+
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+
+            const close = () => {
+                modal.classList.remove('active');
+                document.body.style.overflow = 'auto';
+            };
+
+            confirmBtn.onclick = () => {
+                close();
+                if (onConfirm) onConfirm(true);
+            };
+
+            cancelBtn.onclick = () => {
+                close();
+                if (onConfirm) onConfirm(false);
+            };
+        }
+    </script>
+
+    <!-- Modal Genérico -->
+    <div id="customModal" class="modal-overlay">
+        <div class="modal-content" style="max-width: 400px; text-align: center;">
+            <div id="modalIcon" style="margin-bottom: 1rem; display: flex; justify-content: center;"></div>
+            <h2 id="modalTitle" style="font-size: 1.4rem; color: var(--senai-primary); margin-bottom: 0.5rem;"></h2>
+            <p id="modalMessage" style="color: #666; margin-bottom: 1.5rem;"></p>
+            <div id="modalActions" style="display: flex; gap: 10px; flex-direction: column;">
+                <button id="modalConfirmBtn" class="btn btn-primary" style="margin-top: 0;">Confirmar</button>
+                <button id="modalCancelBtn" class="btn" style="background: #eee; color: #333; display: none; margin-top: 0;">Cancelar</button>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

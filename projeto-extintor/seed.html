@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SEED FIRESTORE | SENAI</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" type="image/png" href="image.png">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        .loading-spinner { animation: spin 1s linear infinite; }
+        #log { 
+            background: #1a1a1a; 
+            color: #0f0; 
+            padding: 1.5rem; 
+            border-radius: 12px; 
+            font-family: monospace; 
+            font-size: 0.85rem; 
+            max-height: 400px; 
+            overflow-y: auto; 
+            text-align: left;
+            margin-top: 1rem;
+        }
+        #log p { margin: 4px 0; }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>Configuração do Banco de Dados</h1>
+            <p>Popular Firestore com dados iniciais</p>
+        </div>
+    </header>
+
+    <main class="container">
+        <div class="card animate-fade">
+            <i data-lucide="database" class="icon-large"></i>
+            <h2>Seed do Firestore</h2>
+            <p style="margin-bottom: 20px; color: #666;">
+                Clique no botão abaixo para enviar todos os dados do <code>data.json</code> para o Firebase Firestore.
+                <br><br>
+                <strong style="color: #dc3545;">⚠️ Use apenas uma vez!</strong> Isso irá sobrescrever os dados existentes.
+            </p>
+            
+            <button id="seedBtn" onclick="startSeed()" class="btn btn-primary" style="width: 100%; border: none; font-size: 1rem; cursor: pointer;">
+                <i data-lucide="upload-cloud"></i> Iniciar Seed do Firestore
+            </button>
+            
+            <div id="log" style="display: none;"></div>
+            
+            <a href="index.html" class="btn" style="background: #eee; color: #333; margin-top: 1rem; text-decoration: none;">
+                <i data-lucide="home"></i> Voltar ao Dashboard
+            </a>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 SENAI - Configuração do Sistema</p>
+    </footer>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-app.js";
+        import { getFirestore, doc, writeBatch, collection } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyAARuHXm_HqCT-CW7QZU-vBdfnIbXO10bs",
+            authDomain: "projetobruno-91df6.firebaseapp.com",
+            projectId: "projetobruno-91df6",
+            storageBucket: "projetobruno-91df6.firebasestorage.app",
+            messagingSenderId: "801742328850",
+            appId: "1:801742328850:web:29a98b52a643587f0034cb",
+            measurementId: "G-ES45MDSCCH"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        window.seedFirestore = async function() {
+            const logEl = document.getElementById('log');
+            logEl.style.display = 'block';
+            
+            function log(msg, color = '#0f0') {
+                logEl.innerHTML += `<p style="color: ${color};">> ${msg}</p>`;
+                logEl.scrollTop = logEl.scrollHeight;
+            }
+
+            log('Buscando dados do data.json...', '#fff');
+
+            try {
+                const response = await fetch('data.json');
+                const data = await response.json();
+                const keys = Object.keys(data);
+                
+                log(`✓ ${keys.length} itens encontrados no data.json`, '#0f0');
+                log('Iniciando envio para o Firestore...', '#fff');
+
+                // Firestore batches support max 500 operations
+                const batchSize = 450;
+                let processed = 0;
+
+                for (let i = 0; i < keys.length; i += batchSize) {
+                    const batch = writeBatch(db);
+                    const chunk = keys.slice(i, i + batchSize);
+                    
+                    for (const id of chunk) {
+                        // Sanitize ID: replace / with - to avoid Firestore path issues
+                        const safeId = id.replace(/\//g, '-');
+                        const docRef = doc(db, "extintores", safeId);
+                        // Store original ID as field for display purposes
+                        const itemData = { ...data[id], _originalId: id };
+                        batch.set(docRef, itemData);
+                        processed++;
+                    }
+
+                    await batch.commit();
+                    log(`✓ Batch enviado: ${processed}/${keys.length} documentos`, '#0f0');
+                }
+
+                log('', '#000');
+                log('═══════════════════════════════════════', '#0f0');
+                log(`✅ SEED COMPLETO! ${keys.length} documentos enviados com sucesso!`, '#0f0');
+                log('═══════════════════════════════════════', '#0f0');
+                log('', '#000');
+                log('Agora você pode acessar o Dashboard normalmente.', '#fff');
+
+                document.getElementById('seedBtn').style.display = 'none';
+            } catch (error) {
+                log(`❌ ERRO: ${error.message}`, '#f00');
+                console.error(error);
+            }
+        };
+    </script>
+
+    <script>
+        lucide.createIcons();
+
+        function startSeed() {
+            const btn = document.getElementById('seedBtn');
+            btn.innerHTML = '<i data-lucide="loader" class="loading-spinner" style="width:20px;height:20px;"></i> Enviando dados...';
+            btn.disabled = true;
+            btn.style.opacity = '0.7';
+            lucide.createIcons();
+            
+            window.seedFirestore();
+        }
+    </script>
+</body>
+</html>

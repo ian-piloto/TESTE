@@ -1,0 +1,857 @@
+{
+    "A02": {
+        "tipo": "Água Pressurizada",
+        "capacidade": "N\/A",
+        "localizacao": "BLOCO D - BANHEIRO SECRETARIA",
+        "ultima_inspecao": "06\/05\/2026",
+        "validade": "Ver etiqueta corporal",
+        "status": "OK",
+        "states": {
+            "lacre": "ok",
+            "anel": "ok",
+            "pino": "ok",
+            "inmetro": "ok",
+            "sinalizacao": "ok",
+            "recarga": "ok",
+            "hidrostatico": "ok"
+        },
+        "responsaveis": {
+            "lacre": "Ian Piloto",
+            "anel": "Ian Piloto",
+            "pino": "Ian Piloto",
+            "inmetro": "Ian Piloto",
+            "sinalizacao": "Ian Piloto",
+            "recarga": "Ian Piloto",
+            "hidrostatico": "Ian Piloto"
+        },
+        "responsavel": "Ian Piloto"
+    },
+    "A03": {
+        "tipo": "Água Pressurizada",
+        "capacidade": "N\/A",
+        "localizacao": "BLOCO A - RECEPÇÃO EXTERNA",
+        "ultima_inspecao": "06\/05\/2026",
+        "validade": "Ver etiqueta corporal",
+        "status": "Atenção",
+        "states": {
+            "lacre": "ok",
+            "anel": "ok",
+            "pino": "ok",
+            "inmetro": "ok",
+            "sinalizacao": "ok",
+            "recarga": "ok",
+            "hidrostatico": "x"
+        },
+        "responsaveis": {
+            "lacre": "boa noite",
+            "anel": "boa noite",
+            "pino": "boa noite",
+            "inmetro": "boa noite",
+            "sinalizacao": "boa noite",
+            "recarga": "boa noite",
+            "hidrostatico": "boa noite"
+        },
+        "observacao": "ta faltando",
+        "responsavel": "boa noite"
+    },
+    "A04": {
+        "tipo": "Água Pressurizada",
+        "capacidade": "N\/A",
+        "localizacao": "BLOCO D - BANHEIRO VISITANTE FEMININO",
+        "ultima_inspecao": "Pendente",
+        "validade": "Ver etiqueta corporal",
+        "status": "OK"
+    },
+    "A05": {
+        "tipo": "Água Pressurizada",
+        "capacidade": "N\/A",
+        "localizacao": "BLOCO C1 - CORREDOR DEP. SOLDA",
+        "ultima_inspecao": "Pendente",
+        "validade": "Ver etiqueta corporal",
+        "status": "OK"
+    },
+    "A06": {
+        "tipo": "Água Pressurizada",
+        "capacidade": "N\/A",
+        "localizacao": "BLOCO C1 - CORREDOR LAB. METROLOGIA",
+        "ultima_inspecao": "Pendente",
+        "validade": "Ver etiqueta corporal",
+        "status": "OK"
+    },
+    "A07": {
+        "tipo": "Água Pressurizada",
+        "capacidade": "N\/A",
+        "localizacao": "BLOCO C1 - CORREDOR CNC",
+        "ultima_inspecao": "Pendente",
+        "validade": "Ver etiqueta corporal",
+        "status": "OK"
+    },
+    "A08": {
+        "tipo": "Água Pressurizada",
+        "capacidade": "N\/A",
+        "localizacao": "BLOCO C1 - CORREDOR SALA 05",
+        "ultima_inspecao": "Pendente",
+        "validade": "Ver etiqueta corporal",
+        "status": "OK"
+    },
+    "A09": {
+        "tipo": "Água Pressurizada",
+        "capacidade": "N\/A",
+        "localizacao": "BLOCO D - BANHEIRO ALUNOS MASCULINO",
+        "ultima_inspecao": "Pendente",
+        "validade": "Ver etiqueta corporal",
+        "status": "OK"
+    },
+    "A10": {
+        "tipo": "Água Pressurizada",
+        "capacidade": "N\/A",
+        "localizacao": "BLOCO B - SALA DOS PROFESSORES",
+        "ultima_inspecao": "Pendente",
+        "validade": "Ver etiqueta corporal",
+        "status": "OK"
+    },
+    "A11": {
+        "tipo": "Água Pressurizada",
+        "capacidade": "N\/A",
+        "localizacao": "BLOCO B - PATIO REFEITORIO",
+        "ultima_inspecao": "Pendente",
+        "validade": "Ver etiqueta corporal",
+        "status": "OK"
+    },
+    "A12": {
+        "tipo": "Água Pressurizada",
+        "capacidade": "N\/A",
+        "localizacao": "BLOCO B - CORREDOR COPA",
+        "ultima_inspecao": "Pendente",
+        "validade": "Ver etiqueta corporal",
+        "status": "OK"
+    },
+    "A13": {
+        "tipo": "Água Pressurizada",
+        "capacidade": "N\/A",
+        "localizacao": "BLOCO D - BANHEIRO ALUNOS FEMININO",
+        "ultima_inspecao": "Pendente",
+        "validade": "Ver etiqueta corporal",
+        "status": "OK"
+    },
+    "A14": {
+        "tipo": "Água Pressurizada",
+        "capacidade": "N\/A",
+        "localizacao": "BLOCO C2 - CORREDOR ÁREA DE ALIMENTOS",
+        "ultima_inspecao": "Pendente",
+        "validade": "Ver etiqueta corporal",
+        "status": "OK"
+    },
+    "A15": {
+        "tipo": "Água Pressurizada",
+        "capacidade": "N\/A",
+        "localizacao": "BLOCO C2 - CORREDOR CAM\/CNC",
+        "ultima_inspecao": "Pendente",
+        "validade": "Ver etiqueta corporal",
+        "status": "OK"
+    },
+    "A16": {
+        "tipo": "Água Pressurizada",
+        "capacidade": "N\/A",
+        "localizacao": "BLOCO C2 - CORREDOR SALA DE T.I - 01",
+        "ultima_inspecao": "Pendente",
+        "validade": "Ver etiqueta corporal",
+        "status": "OK"
+    },
+    "A17": {
+        "tipo": "Água Pressurizada",
+        "capacidade": "N\/A",
+        "localizacao": "BLOCO C2 - CORREDOR FERRAG.DE MOVEIS",
+        "ultima_inspecao": "Pendente",
+        "validade": "Ver etiqueta corporal",
+        "status": "OK"
+    },
+    "A18": {
+        "tipo": "Água Pressurizada",
+        "capacidade": "N\/A",
+        "localizacao": "BLOCO D - SANITARIOS MASC.FUNDOS",
+        "ultima_inspecao": "Pendente",
+        "validade": "Ver etiqueta corporal",
+        "status": "OK"
+    },
+    "A19": {
+        "tipo": "Água Pressurizada",
+        "capacidade": "N\/A",
+        "localizacao": "BLOCO I - ZELADORIA",
+        "ultima_inspecao": "Pendente",
+        "validade": "Ver etiqueta corporal",
+        "status": "OK"
+    },
+    "A20": {
+        "tipo": "Água Pressurizada",
+        "capacidade": "N\/A",
+        "localizacao": "BLOCO I - JARDINAGEM",
+        "ultima_inspecao": "Pendente",
+        "validade": "Ver etiqueta corporal",
+        "status": "OK"
+    },
+    "A21": {
+        "tipo": "Água Pressurizada",
+        "capacidade": "N\/A",
+        "localizacao": "BLOCO A - BIBLIOTECA",
+        "ultima_inspecao": "Pendente",
+        "validade": "Ver etiqueta corporal",
+        "status": "OK"
+    },
+    "A22": {
+        "tipo": "Água Pressurizada",
+        "capacidade": "N\/A",
+        "localizacao": "BLOCO E - AUDITORIO",
+        "ultima_inspecao": "Pendente",
+        "validade": "Ver etiqueta corporal",
+        "status": "OK"
+    },
+    "P01": {
+        "tipo": "Pó Químico Seco (PQS)",
+        "capacidade": "N\/A",
+        "localizacao": "BLOCO A - RECEPÇÃO EXTERNA",
+        "ultima_inspecao": "Pendente",
+        "validade": "Ver etiqueta corporal",
+        "status": "OK"
+    },
+    "P02": {
+        "tipo": "Pó Químico Seco (PQS)",
+        "capacidade": "N\/A",
+        "localizacao": "BLOCO A - CORREDOR SECRETARIA",
+        "ultima_inspecao": "Pendente",
+        "validade": "Ver etiqueta corporal",
+        "status": "OK"
+    },
+    "P03": {
+        "tipo": "Pó Químico Seco (PQS)",
+        "capacidade": "N\/A",
+        "localizacao": "BLOCO A - SECRETARIA\/ BIBLIOTECA EXTERNO",
+        "ultima_inspecao": "Pendente",
+        "validade": "Ver etiqueta corporal",
+        "status": "OK"
+    },
+    "P04": {
+        "tipo": "Pó Químico Seco (PQS)",
+        "capacidade": "N\/A",
+        "localizacao": "BLOCO A - BIBLIOTECA",
+        "ultima_inspecao": "Pendente",
+        "validade": "Ver etiqueta corporal",
+        "status": "OK"
+    },
+    "P05": {
+        "tipo": "Pó Químico Seco (PQS)",
+        "capacidade": "N\/A",
+        "localizacao": "BLOCO N - DEPOSITO DE GÁS SOLDA",
+        "ultima_inspecao": "Pendente",
+        "validade": "Ver etiqueta corporal",
+        "status": "OK"
+    },
+    "P06": {
+        "tipo": "Pó Químico Seco (PQS)",
+        "capacidade": "N\/A",
+        "localizacao": "BLOCO N - DEPOSITO DE GÁS SOLDA",
+        "ultima_inspecao": "Pendente",
+        "validade": "Ver etiqueta corporal",
+        "status": "OK"
+    },
+    "P07": {
+        "tipo": "Pó Químico Seco (PQS)",
+        "capacidade": "N\/A",
+        "localizacao": "BLOCO O - ABRIGO AAC",
+        "ultima_inspecao": "Pendente",
+        "validade": "Ver etiqueta corporal",
+        "status": "OK"
+    },
+    "P08": {
+        "tipo": "Pó Químico Seco (PQS)",
+        "capacidade": "N\/A",
+        "localizacao": "BLOCO E - AUDITORIO",
+        "ultima_inspecao": "Pendente",
+        "validade": "Ver etiqueta corporal",
+        "status": "OK"
+    },
+    "P09": {
+        "tipo": "Pó Químico Seco (PQS)",
+        "capacidade": "N\/A",
+        "localizacao": "BLOCO E - AUDITORIO",
+        "ultima_inspecao": "Pendente",
+        "validade": "Ver etiqueta corporal",
+        "status": "OK"
+    },
+    "P10": {
+        "tipo": "Pó Químico Seco (PQS)",
+        "capacidade": "N\/A",
+        "localizacao": "BLOCO E - AUDITORIO",
+        "ultima_inspecao": "Pendente",
+        "validade": "Ver etiqueta corporal",
+        "status": "OK"
+    },
+    "P11": {
+        "tipo": "Pó Químico Seco (PQS)",
+        "capacidade": "N\/A",
+        "localizacao": "BLOCO C1 - CORREDOR VEICULOS PESADOS",
+        "ultima_inspecao": "Pendente",
+        "validade": "Ver etiqueta corporal",
+        "status": "OK"
+    },
+    "P12": {
+        "tipo": "Pó Químico Seco (PQS)",
+        "capacidade": "N\/A",
+        "localizacao": "BLOCO C1 - LABORATÓRIO DE INFORMATICA",
+        "ultima_inspecao": "Pendente",
+        "validade": "Ver etiqueta corporal",
+        "status": "OK"
+    },
+    "P13": {
+        "tipo": "Pó Químico Seco (PQS)",
+        "capacidade": "N\/A",
+        "localizacao": "BLOCO C1 - CORREDOR SALA 04",
+        "ultima_inspecao": "Pendente",
+        "validade": "Ver etiqueta corporal",
+        "status": "OK"
+    },
+    "P14": {
+        "tipo": "Pó Químico Seco (PQS)",
+        "capacidade": "N\/A",
+        "localizacao": "BLOCO C1 - CORREDOR SALA 03",
+        "ultima_inspecao": "Pendente",
+        "validade": "Ver etiqueta corporal",
+        "status": "OK"
+    },
+    "P15": {
+        "tipo": "Pó Químico Seco (PQS)",
+        "capacidade": "N\/A",
+        "localizacao": "BLOCO B - SALA DOS PROFESSORES EXTERNO",
+        "ultima_inspecao": "Pendente",
+        "validade": "Ver etiqueta corporal",
+        "status": "OK"
+    },
+    "P16": {
+        "tipo": "Pó Químico Seco (PQS)",
+        "capacidade": "N\/A",
+        "localizacao": "BLOCO B - PÁTIO CENTRAL (ALMOX.)",
+        "ultima_inspecao": "Pendente",
+        "validade": "Ver etiqueta corporal",
+        "status": "OK"
+    },
+    "P17": {
+        "tipo": "Pó Químico Seco (PQS)",
+        "capacidade": "N\/A",
+        "localizacao": "BLOCO B - REFEITORIO INTERNO",
+        "ultima_inspecao": "Pendente",
+        "validade": "Ver etiqueta corporal",
+        "status": "OK"
+    },
+    "P18": {
+        "tipo": "Pó Químico Seco (PQS)",
+        "capacidade": "N\/A",
+        "localizacao": "BLOCO D - BANHEIRO COPA",
+        "ultima_inspecao": "Pendente",
+        "validade": "Ver etiqueta corporal",
+        "status": "OK"
+    },
+    "P19": {
+        "tipo": "Pó Químico Seco (PQS)",
+        "capacidade": "N\/A",
+        "localizacao": "BLOCO B - COZINHA REFEITÓRIO INTERNO",
+        "ultima_inspecao": "Pendente",
+        "validade": "Ver etiqueta corporal",
+        "status": "OK"
+    },
+    "P20": {
+        "tipo": "Pó Químico Seco (PQS)",
+        "capacidade": "N\/A",
+        "localizacao": "BLOCO K - COMPRESSORES MECANICA",
+        "ultima_inspecao": "Pendente",
+        "validade": "Ver etiqueta corporal",
+        "status": "OK"
+    },
+    "P21": {
+        "tipo": "Pó Químico Seco (PQS)",
+        "capacidade": "N\/A",
+        "localizacao": "BLOCO K - COMPRESSORES MECANICA",
+        "ultima_inspecao": "Pendente",
+        "validade": "Ver etiqueta corporal",
+        "status": "OK"
+    },
+    "P22": {
+        "tipo": "Pó Químico Seco (PQS)",
+        "capacidade": "N\/A",
+        "localizacao": "BLOCO P - RECICLAGEM",
+        "ultima_inspecao": "Pendente",
+        "validade": "Ver etiqueta corporal",
+        "status": "OK"
+    },
+    "P23": {
+        "tipo": "Pó Químico Seco (PQS)",
+        "capacidade": "N\/A",
+        "localizacao": "BLOCO P - RECICLAGEM",
+        "ultima_inspecao": "Pendente",
+        "validade": "Ver etiqueta corporal",
+        "status": "OK"
+    },
+    "P24": {
+        "tipo": "Pó Químico Seco (PQS)",
+        "capacidade": "N\/A",
+        "localizacao": "BLOCO H - DEPOSITO GLP",
+        "ultima_inspecao": "Pendente",
+        "validade": "Ver etiqueta corporal",
+        "status": "OK"
+    },
+    "P25": {
+        "tipo": "Pó Químico Seco (PQS)",
+        "capacidade": "N\/A",
+        "localizacao": "BLOCO H - DEPOSITO GÁS EMPILHADEIRA",
+        "ultima_inspecao": "Pendente",
+        "validade": "Ver etiqueta corporal",
+        "status": "OK"
+    },
+    "P26": {
+        "tipo": "Pó Químico Seco (PQS)",
+        "capacidade": "N\/A",
+        "localizacao": "BLOCO C2 - CORREDOR CABINE DE PINTURA",
+        "ultima_inspecao": "Pendente",
+        "validade": "Ver etiqueta corporal",
+        "status": "OK"
+    },
+    "P27": {
+        "tipo": "Pó Químico Seco (PQS)",
+        "capacidade": "N\/A",
+        "localizacao": "BLOCO C2 - CORREDOR CLP",
+        "ultima_inspecao": "Pendente",
+        "validade": "Ver etiqueta corporal",
+        "status": "OK"
+    },
+    "P28": {
+        "tipo": "Pó Químico Seco (PQS)",
+        "capacidade": "N\/A",
+        "localizacao": "BLOCO C2 - CORREDOR MOTORES ELETRICOS",
+        "ultima_inspecao": "Pendente",
+        "validade": "Ver etiqueta corporal",
+        "status": "OK"
+    },
+    "P29": {
+        "tipo": "Pó Químico Seco (PQS)",
+        "capacidade": "N\/A",
+        "localizacao": "BLOCO C2 - CORREDOR CNC MADEIRA",
+        "ultima_inspecao": "Pendente",
+        "validade": "Ver etiqueta corporal",
+        "status": "OK"
+    },
+    "P30": {
+        "tipo": "Pó Químico Seco (PQS)",
+        "capacidade": "N\/A",
+        "localizacao": "BLOCO I - ZELADORIA EXTERNA",
+        "ultima_inspecao": "Pendente",
+        "validade": "Ver etiqueta corporal",
+        "status": "OK"
+    },
+    "P31": {
+        "tipo": "Pó Químico Seco (PQS)",
+        "capacidade": "N\/A",
+        "localizacao": "BLOCO C2 - ÁREA DE ALIMENTOS",
+        "ultima_inspecao": "Pendente",
+        "validade": "Ver etiqueta corporal",
+        "status": "OK"
+    },
+    "CO2 \/01": {
+        "tipo": "Dióxido de Carbono (CO2)",
+        "capacidade": "N\/A",
+        "localizacao": "BLOCO L - GUARITA",
+        "ultima_inspecao": "Pendente",
+        "validade": "Ver etiqueta corporal",
+        "status": "OK"
+    },
+    "CO2 \/02": {
+        "tipo": "Dióxido de Carbono (CO2)",
+        "capacidade": "N\/A",
+        "localizacao": "BLOCO O - RESERVATORIO AGUA POTAVÉL",
+        "ultima_inspecao": "Pendente",
+        "validade": "Ver etiqueta corporal",
+        "status": "OK"
+    },
+    "CO2 \/03": {
+        "tipo": "Dióxido de Carbono (CO2)",
+        "capacidade": "N\/A",
+        "localizacao": "BLOCO E - AUDITÓRIO",
+        "ultima_inspecao": "Pendente",
+        "validade": "Ver etiqueta corporal",
+        "status": "OK"
+    },
+    "CO2 \/04": {
+        "tipo": "Dióxido de Carbono (CO2)",
+        "capacidade": "N\/A",
+        "localizacao": "BLOCO C1 - LAB. PNEUMATICA\/ HIDRAULICA",
+        "ultima_inspecao": "Pendente",
+        "validade": "Ver etiqueta corporal",
+        "status": "OK"
+    },
+    "CO2 \/05": {
+        "tipo": "Dióxido de Carbono (CO2)",
+        "capacidade": "N\/A",
+        "localizacao": "BLOCO C1 - CORREDOR SALA DE DESENHO",
+        "ultima_inspecao": "Pendente",
+        "validade": "Ver etiqueta corporal",
+        "status": "OK"
+    },
+    "CO2 \/06": {
+        "tipo": "Dióxido de Carbono (CO2)",
+        "capacidade": "N\/A",
+        "localizacao": "BLOCO C1 - CORREDOR SALA TEC. 01",
+        "ultima_inspecao": "Pendente",
+        "validade": "Ver etiqueta corporal",
+        "status": "OK"
+    },
+    "CO2 \/07": {
+        "tipo": "Dióxido de Carbono (CO2)",
+        "capacidade": "N\/A",
+        "localizacao": "BLOCO C2 - CORREDOR ÁREA DE ALIMENTOS",
+        "ultima_inspecao": "Pendente",
+        "validade": "Ver etiqueta corporal",
+        "status": "OK"
+    },
+    "CO2 \/08": {
+        "tipo": "Dióxido de Carbono (CO2)",
+        "capacidade": "N\/A",
+        "localizacao": "BLOCO C2 - CORREDOR COSTURA INDUSTRIAL",
+        "ultima_inspecao": "Pendente",
+        "validade": "Ver etiqueta corporal",
+        "status": "OK"
+    },
+    "CO2 \/09": {
+        "tipo": "Dióxido de Carbono (CO2)",
+        "capacidade": "N\/A",
+        "localizacao": "BLOCO C2 - CORREDOR SALA AULA 01",
+        "ultima_inspecao": "Pendente",
+        "validade": "Ver etiqueta corporal",
+        "status": "OK"
+    },
+    "CO2 \/10": {
+        "tipo": "Dióxido de Carbono (CO2)",
+        "capacidade": "N\/A",
+        "localizacao": "BLOCO M - CABINE PRIMARIA EXTERNO",
+        "ultima_inspecao": "Pendente",
+        "validade": "Ver etiqueta corporal",
+        "status": "OK"
+    },
+    "CO2 \/11": {
+        "tipo": "Dióxido de Carbono (CO2)",
+        "capacidade": "N\/A",
+        "localizacao": "BLOCO H - VESTIARIOS FUNCIONARIOS",
+        "ultima_inspecao": "Pendente",
+        "validade": "Ver etiqueta corporal",
+        "status": "OK"
+    },
+    "CO2 \/12": {
+        "tipo": "Dióxido de Carbono (CO2)",
+        "capacidade": "N\/A",
+        "localizacao": "BLOCO C2 - ÁREA DE ALIMENTOS",
+        "ultima_inspecao": "Pendente",
+        "validade": "Ver etiqueta corporal",
+        "status": "OK"
+    },
+    "H01": {
+        "tipo": "Hidrante",
+        "capacidade": "N\/A",
+        "localizacao": "BLOCO C2 - SÁIDA  CORREDOR FERRAGENS P\/ MÓVEIS",
+        "ultima_inspecao": "Pendente",
+        "validade": "Ver etiqueta corporal",
+        "status": "OK"
+    },
+    "H02": {
+        "tipo": "Hidrante",
+        "capacidade": "N\/A",
+        "localizacao": "BLOCO C2 - SAÍDA CORREDOR SALA T.I - 01",
+        "ultima_inspecao": "Pendente",
+        "validade": "Ver etiqueta corporal",
+        "status": "OK"
+    },
+    "H03": {
+        "tipo": "Hidrante",
+        "capacidade": "N\/A",
+        "localizacao": "BLOCO D - BANHEIRO ALUNO FEMININO (BLOCO C2)",
+        "ultima_inspecao": "Pendente",
+        "validade": "Ver etiqueta corporal",
+        "status": "OK"
+    },
+    "H04": {
+        "tipo": "Hidrante",
+        "capacidade": "N\/A",
+        "localizacao": "BLOCO C2 - SAÍDA FRETE AO CSU",
+        "ultima_inspecao": "Pendente",
+        "validade": "Ver etiqueta corporal",
+        "status": "OK"
+    },
+    "H05": {
+        "tipo": "Hidrante",
+        "capacidade": "N\/A",
+        "localizacao": "BLOCO I - ZELADORIA",
+        "ultima_inspecao": "Pendente",
+        "validade": "Ver etiqueta corporal",
+        "status": "OK"
+    },
+    "H06": {
+        "tipo": "Hidrante",
+        "capacidade": "N\/A",
+        "localizacao": "BLOCO I - PATIO EMPILHADEIRA",
+        "ultima_inspecao": "Pendente",
+        "validade": "Ver etiqueta corporal",
+        "status": "OK"
+    },
+    "H07": {
+        "tipo": "Hidrante",
+        "capacidade": "N\/A",
+        "localizacao": "BLOCO D - BANHEIRO ALUNO MASCULINO (BLOCO C1)",
+        "ultima_inspecao": "Pendente",
+        "validade": "Ver etiqueta corporal",
+        "status": "OK"
+    },
+    "H08": {
+        "tipo": "Hidrante",
+        "capacidade": "N\/A",
+        "localizacao": "BLOCO B - CORREDOR BANHEIRO COPA",
+        "ultima_inspecao": "Pendente",
+        "validade": "Ver etiqueta corporal",
+        "status": "OK"
+    },
+    "H09": {
+        "tipo": "Hidrante",
+        "capacidade": "N\/A",
+        "localizacao": "BLOCO C1 - SAÍDA CORREDOR SALA 03",
+        "ultima_inspecao": "Pendente",
+        "validade": "Ver etiqueta corporal",
+        "status": "OK"
+    },
+    "H10": {
+        "tipo": "Hidrante",
+        "capacidade": "N\/A",
+        "localizacao": "BLOCO C1 - SAÍDA CORREDOR OFIC. SOLDA",
+        "ultima_inspecao": "Pendente",
+        "validade": "Ver etiqueta corporal",
+        "status": "OK"
+    },
+    "H11": {
+        "tipo": "Hidrante",
+        "capacidade": "N\/A",
+        "localizacao": "BLOCO C1 - DE FRENTE BANHEIRO FEMININO (BLOCO C1)",
+        "ultima_inspecao": "Pendente",
+        "validade": "Ver etiqueta corporal",
+        "status": "OK"
+    },
+    "H12": {
+        "tipo": "Hidrante",
+        "capacidade": "N\/A",
+        "localizacao": "BLOCO A - HALL  EXTERNO RECEPÇÃO",
+        "ultima_inspecao": "Pendente",
+        "validade": "Ver etiqueta corporal",
+        "status": "OK"
+    },
+    "H13": {
+        "tipo": "Hidrante",
+        "capacidade": "N\/A",
+        "localizacao": "BLOCO A - BIBLIOTECA",
+        "ultima_inspecao": "Pendente",
+        "validade": "Ver etiqueta corporal",
+        "status": "OK"
+    },
+    "H14": {
+        "tipo": "Hidrante",
+        "capacidade": "N\/A",
+        "localizacao": "BLOCO  E - AUDITORIO",
+        "ultima_inspecao": "Pendente",
+        "validade": "Ver etiqueta corporal",
+        "status": "OK"
+    },
+    "H15": {
+        "tipo": "Hidrante",
+        "capacidade": "N\/A",
+        "localizacao": "BLOCO B - CORREDOR SALA DOS DOCENTES.",
+        "ultima_inspecao": "Pendente",
+        "validade": "Ver etiqueta corporal",
+        "status": "OK"
+    },
+    "PORTA 19": {
+        "tipo": "Porta Corta-Fogo",
+        "capacidade": "N\/A",
+        "localizacao": "BLOCO E - AUDITÓRIO COPA",
+        "ultima_inspecao": "Pendente",
+        "validade": "Ver etiqueta corporal",
+        "status": "OK"
+    },
+    "PORTA 20": {
+        "tipo": "Porta Corta-Fogo",
+        "capacidade": "N\/A",
+        "localizacao": "BLOCO E - AUDITÓRIO SALA DE SOM",
+        "ultima_inspecao": "Pendente",
+        "validade": "Ver etiqueta corporal",
+        "status": "OK"
+    },
+    "PORTA 21": {
+        "tipo": "Porta Corta-Fogo",
+        "capacidade": "N\/A",
+        "localizacao": "BLOCO E - AUDITÓRIO PALCO",
+        "ultima_inspecao": "Pendente",
+        "validade": "Ver etiqueta corporal",
+        "status": "OK"
+    },
+    "PORTA 01": {
+        "tipo": "Rota de Fuga",
+        "capacidade": "N\/A",
+        "localizacao": "BLOCO C1 - CORREDOR DE ENTRADA",
+        "ultima_inspecao": "Pendente",
+        "validade": "Ver etiqueta corporal",
+        "status": "OK"
+    },
+    "PORTA 02": {
+        "tipo": "Rota de Fuga",
+        "capacidade": "N\/A",
+        "localizacao": "BLOCO C1 - CORREDOR LAB. CAD\/CAM",
+        "ultima_inspecao": "Pendente",
+        "validade": "Ver etiqueta corporal",
+        "status": "OK"
+    },
+    "PORTA 03": {
+        "tipo": "Rota de Fuga",
+        "capacidade": "N\/A",
+        "localizacao": "BLOCO C1 - CORREDOR DEP. DA MEC.",
+        "ultima_inspecao": "Pendente",
+        "validade": "Ver etiqueta corporal",
+        "status": "OK"
+    },
+    "PORTA 04": {
+        "tipo": "Rota de Fuga",
+        "capacidade": "N\/A",
+        "localizacao": "BLOCO C1 - CORREDOR PÁTIO",
+        "ultima_inspecao": "Pendente",
+        "validade": "Ver etiqueta corporal",
+        "status": "OK"
+    },
+    "PORTA 05": {
+        "tipo": "Rota de Fuga",
+        "capacidade": "N\/A",
+        "localizacao": "BLOCO C1 - CORREDOR SALA 03",
+        "ultima_inspecao": "Pendente",
+        "validade": "Ver etiqueta corporal",
+        "status": "OK"
+    },
+    "PORTA 06": {
+        "tipo": "Rota de Fuga",
+        "capacidade": "N\/A",
+        "localizacao": "BLOCO C1 - CORREDOR SOLDA",
+        "ultima_inspecao": "Pendente",
+        "validade": "Ver etiqueta corporal",
+        "status": "OK"
+    },
+    "PORTA 07": {
+        "tipo": "Rota de Fuga",
+        "capacidade": "N\/A",
+        "localizacao": "BLOCO B - REFEITÓRIO (MICROONDAS)",
+        "ultima_inspecao": "Pendente",
+        "validade": "Ver etiqueta corporal",
+        "status": "OK"
+    },
+    "PORTA 08": {
+        "tipo": "Rota de Fuga",
+        "capacidade": "N\/A",
+        "localizacao": "BLOCO B - REFETÓRIO (CANTINA)",
+        "ultima_inspecao": "Pendente",
+        "validade": "Ver etiqueta corporal",
+        "status": "OK"
+    },
+    "PORTA 09": {
+        "tipo": "Rota de Fuga",
+        "capacidade": "N\/A",
+        "localizacao": "BLOCO C2 - CORREDOR DE ENTRADA",
+        "ultima_inspecao": "Pendente",
+        "validade": "Ver etiqueta corporal",
+        "status": "OK"
+    },
+    "PORTA 10": {
+        "tipo": "Rota de Fuga",
+        "capacidade": "N\/A",
+        "localizacao": "BLOCO C2 - CORREDOR SALA DE T.I - 1",
+        "ultima_inspecao": "Pendente",
+        "validade": "Ver etiqueta corporal",
+        "status": "OK"
+    },
+    "PORTA 11": {
+        "tipo": "Rota de Fuga",
+        "capacidade": "N\/A",
+        "localizacao": "BLOCO C2 - CORREDOR SALA FERRAGENS",
+        "ultima_inspecao": "Pendente",
+        "validade": "Ver etiqueta corporal",
+        "status": "OK"
+    },
+    "PORTA 12": {
+        "tipo": "Rota de Fuga",
+        "capacidade": "N\/A",
+        "localizacao": "BLOCO C2 - CORREDOR COORD.",
+        "ultima_inspecao": "Pendente",
+        "validade": "Ver etiqueta corporal",
+        "status": "OK"
+    },
+    "PORTA 13": {
+        "tipo": "Rota de Fuga",
+        "capacidade": "N\/A",
+        "localizacao": "BLOCO C2 - CORREDOR ALMOX. MOVELARIA",
+        "ultima_inspecao": "Pendente",
+        "validade": "Ver etiqueta corporal",
+        "status": "OK"
+    },
+    "PORTA 14": {
+        "tipo": "Rota de Fuga",
+        "capacidade": "N\/A",
+        "localizacao": "BLOCO C2 - CORREDOR DEPÓSITO DE TINTAS",
+        "ultima_inspecao": "Pendente",
+        "validade": "Ver etiqueta corporal",
+        "status": "OK"
+    },
+    "PORTA 15": {
+        "tipo": "Rota de Fuga",
+        "capacidade": "N\/A",
+        "localizacao": "BLOCO E - ENTRADA DO AUDITÓRIO A",
+        "ultima_inspecao": "Pendente",
+        "validade": "Ver etiqueta corporal",
+        "status": "OK"
+    },
+    "PORTA 16": {
+        "tipo": "Rota de Fuga",
+        "capacidade": "N\/A",
+        "localizacao": "BLOCO E - ENTRADA DO AUDITÓRIO B",
+        "ultima_inspecao": "Pendente",
+        "validade": "Ver etiqueta corporal",
+        "status": "OK"
+    },
+    "PORTA 17": {
+        "tipo": "Rota de Fuga",
+        "capacidade": "N\/A",
+        "localizacao": "BLOCO E - ENTRADA DO AUDITÓRIO C",
+        "ultima_inspecao": "Pendente",
+        "validade": "Ver etiqueta corporal",
+        "status": "OK"
+    },
+    "PORTA 18": {
+        "tipo": "Rota de Fuga",
+        "capacidade": "N\/A",
+        "localizacao": "BLOCO E - ENTRADA DO AUDITÓRIO D",
+        "ultima_inspecao": "Pendente",
+        "validade": "Ver etiqueta corporal",
+        "status": "OK"
+    },
+    "PONTO 01": {
+        "tipo": "Ponto de Encontro",
+        "capacidade": "N\/A",
+        "localizacao": "ESTACIONAMENTO PRINCIPAL",
+        "ultima_inspecao": "Pendente",
+        "validade": "N\/A",
+        "status": "OK"
+    },
+    "PONTO 02": {
+        "tipo": "Ponto de Encontro",
+        "capacidade": "N\/A",
+        "localizacao": "ÁREA EXTERNA - BLOCO F",
+        "ultima_inspecao": "Pendente",
+        "validade": "N\/A",
+        "status": "OK"
+    }
+}

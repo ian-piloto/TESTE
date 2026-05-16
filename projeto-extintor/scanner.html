@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SCANNER | SENAI</title>
+    <meta name="description" content="Scanner QR Code para inspeção de extintores - SENAI">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" type="image/png" href="image.png">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://unpkg.com/html5-qrcode"></script>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div style="display: flex; align-items: center; justify-content: center; gap: 15px;">
+                <a href="index.html" style="color: white;"><i data-lucide="arrow-left"></i></a>
+                <h1 style="margin: 0; font-size: 1.4rem;">Escanear QR Code</h1>
+            </div>
+        </div>
+    </header>
+
+    <main class="container">
+        <div class="card animate-fade">
+            <div id="camera-controls" style="margin-bottom: 1rem; text-align: left;">
+                <label for="camera-select" style="display: block; margin-bottom: 0.5rem; font-weight: 600; font-size: 0.9rem; color: #666;">Selecionar Câmera:</label>
+                <div style="display: flex; gap: 10px;">
+                    <select id="camera-select" style="flex: 1; padding: 10px; border: 1px solid #ddd; border-radius: 8px; background: white; font-family: inherit;">
+                        <option value="">Carregando câmeras...</option>
+                    </select>
+                    <button id="switch-camera-btn" class="btn btn-primary" style="margin-top: 0; width: auto; padding: 0 15px; border-radius: 8px;">
+                        <i data-lucide="refresh-cw"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div id="reader" class="preview-container"></div>
+            
+            <div id="result" style="margin-top: 1.5rem; display: none;">
+                <p>QR Code detectado!</p>
+                <div id="qr-data" style="font-weight: bold; margin: 10px 0;"></div>
+                <a href="#" id="view-details" class="btn btn-primary">Processando...</a>
+            </div>
+            
+            <div id="scanner-instruction" style="margin-top: 1.5rem;">
+                <p>Aponte a câmera para o QR Code fixado no extintor.</p>
+            </div>
+            
+            <div id="manual-entry" style="margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid #ddd;">
+                <p style="margin-bottom: 0.5rem; font-weight: bold; color: #333;">Ou digite o número do equipamento:</p>
+                <div style="display: flex; gap: 10px;">
+                    <input type="text" id="manual-qr-code" style="flex: 1; padding: 10px; border: 1px solid #ccc; border-radius: 4px; font-size: 16px;" placeholder="Ex: EXT-001">
+                    <button onclick="processManualCode()" class="btn btn-primary" style="margin-top: 0; padding: 10px 20px;">Buscar</button>
+                </div>
+            </div>
+            
+            <a href="index.html" class="btn btn-danger" style="margin-top: 1.5rem;">
+                Cancelar
+            </a>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 SENAI - Sistema de Segurança</p>
+    </footer>
+
+    <script>
+        lucide.createIcons();
+
+        let html5QrCode;
+        let isScannerInitialized = false;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const name = localStorage.getItem('inspectorName');
+            if (!name || name.trim() === '') {
+                showModal('Identificação Necessária', 'O nome do responsável é obrigatório. Por favor, informe no painel inicial.', 'warning', 'alert', () => {
+                    window.location.href = 'index.html';
+                });
+            } else {
+                initScanner();
+            }
+        });
+
+        async function initScanner() {
+            try {
+                html5QrCode = new Html5Qrcode("reader");
+                const cameras = await Html5Qrcode.getCameras();
+                
+                if (cameras && cameras.length > 0) {
+                    const cameraSelect = document.getElementById('camera-select');
+                    cameraSelect.innerHTML = '';
+                    
+                    cameras.forEach(camera => {
+                        const option = document.createElement('option');
+                        option.value = camera.id;
+                        option.text = camera.label || `Câmera ${cameraSelect.length + 1}`;
+                        cameraSelect.appendChild(option);
+                    });
+
+                    // Tenta iniciar com a câmera traseira se disponível
+                    const backCamera = cameras.find(c => c.label.toLowerCase().includes('back') || c.label.toLowerCase().includes('traseira'));
+                    const initialCameraId = backCamera ? backCamera.id : cameras[0].id;
+                    cameraSelect.value = initialCameraId;
+
+                    startScanning(initialCameraId);
+
+                    cameraSelect.onchange = (e) => {
+                        startScanning(e.target.value);
+                    };
+
+                    document.getElementById('switch-camera-btn').onclick = () => {
+                        const currentIndex = cameras.findIndex(c => c.id === cameraSelect.value);
+                        const nextIndex = (currentIndex + 1) % cameras.length;
+                        const nextCameraId = cameras[nextIndex].id;
+                        cameraSelect.value = nextCameraId;
+                        startScanning(nextCameraId);
+                    };
+                } else {
+                    showModal('Erro', 'Nenhuma câmera encontrada.', 'error');
+                }
+            } catch (err) {
+                console.error("Erro ao inicializar scanner:", err);
+                showModal('Erro', 'Não foi possível acessar a câmera. Verifique as permissões.', 'error');
+            }
+        }
+
+        async function startScanning(cameraId) {
+            try {
+                if (isScannerInitialized) {
+                    await html5QrCode.stop();
+                }
+
+                const config = {
+                    fps: 10,
+                    qrbox: { width: 250, height: 250 },
+                    aspectRatio: 1.0
+                };
+
+                await html5QrCode.start(
+                    cameraId,
+                    config,
+                    onScanSuccess,
+                    onScanFailure
+                );
+                
+                isScannerInitialized = true;
+            } catch (err) {
+                console.error("Erro ao iniciar câmera:", err);
+                // showModal('Erro', 'Falha ao iniciar a câmera selecionada.', 'error');
+            }
+        }
+
+        function onScanSuccess(decodedText, decodedResult) {
+            console.log(`Code matched = ${decodedText}`, decodedResult);
+            
+            // Para o scanner após sucesso
+            if (isScannerInitialized) {
+                html5QrCode.stop().then(() => {
+                    isScannerInitialized = false;
+                    document.getElementById('camera-controls').style.display = 'none';
+                    document.getElementById('scanner-instruction').style.display = 'none';
+                    document.getElementById('result').style.display = 'block';
+                    document.getElementById('qr-data').innerText = "ID: " + decodedText;
+                    
+                    const viewLink = document.getElementById('view-details');
+                    viewLink.href = `view.html?id=${encodeURIComponent(decodedText)}`;
+                    viewLink.innerText = "Ver Detalhes do Extintor";
+                }).catch(err => {
+                    console.error("Erro ao parar scanner:", err);
+                });
+            }
+        }
+
+        function onScanFailure(error) {
+            // silent fail
+        }
+
+        function processManualCode() {
+            const manualInput = document.getElementById('manual-qr-code').value.trim();
+            if (manualInput !== "") {
+                if (isScannerInitialized) {
+                    html5QrCode.stop().then(() => {
+                        window.location.href = `view.html?id=${encodeURIComponent(manualInput)}`;
+                    });
+                } else {
+                    window.location.href = `view.html?id=${encodeURIComponent(manualInput)}`;
+                }
+            } else {
+                showModal('Atenção', 'Por favor, digite o número do equipamento.', 'warning');
+            }
+        }
+
+        function showModal(title, message, icon = 'info', type = 'alert', onConfirm = null) {
+            const modal = document.getElementById('customModal');
+            const titleEl = document.getElementById('modalTitle');
+            const messageEl = document.getElementById('modalMessage');
+            const iconEl = document.getElementById('modalIcon');
+            const confirmBtn = document.getElementById('modalConfirmBtn');
+            const cancelBtn = document.getElementById('modalCancelBtn');
+
+            titleEl.innerText = title;
+            messageEl.innerText = message;
+            
+            let iconHtml = '';
+            if (icon === 'success') iconHtml = '<i data-lucide="check-circle-2" style="width: 48px; height: 48px; color: #28a745;"></i>';
+            else if (icon === 'error') iconHtml = '<i data-lucide="alert-circle" style="width: 48px; height: 48px; color: #dc3545;"></i>';
+            else if (icon === 'warning') iconHtml = '<i data-lucide="alert-triangle" style="width: 48px; height: 48px; color: #f39c12;"></i>';
+            else iconHtml = '<i data-lucide="info" style="width: 48px; height: 48px; color: #007bff;"></i>';
+            
+            iconEl.innerHTML = iconHtml;
+            lucide.createIcons();
+
+            if (type === 'confirm') {
+                cancelBtn.style.display = 'flex';
+                confirmBtn.innerText = 'Confirmar';
+            } else {
+                cancelBtn.style.display = 'none';
+                confirmBtn.innerText = 'OK';
+            }
+
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+
+            const close = () => {
+                modal.classList.remove('active');
+                document.body.style.overflow = 'auto';
+            };
+
+            confirmBtn.onclick = () => {
+                close();
+                if (onConfirm) onConfirm(true);
+            };
+
+            cancelBtn.onclick = () => {
+                close();
+                if (onConfirm) onConfirm(false);
+            };
+        }
+
+    </script>
+
+    <!-- Modal Genérico -->
+    <div id="customModal" class="modal-overlay">
+        <div class="modal-content" style="max-width: 400px; text-align: center;">
+            <div id="modalIcon" style="margin-bottom: 1rem; display: flex; justify-content: center;"></div>
+            <h2 id="modalTitle" style="font-size: 1.4rem; color: var(--senai-primary); margin-bottom: 0.5rem;"></h2>
+            <p id="modalMessage" style="color: #666; margin-bottom: 1.5rem;"></p>
+            <div id="modalActions" style="display: flex; gap: 10px; flex-direction: column;">
+                <button id="modalConfirmBtn" class="btn btn-primary" style="margin-top: 0;">Confirmar</button>
+                <button id="modalCancelBtn" class="btn" style="background: #eee; color: #333; display: none; margin-top: 0;">Cancelar</button>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

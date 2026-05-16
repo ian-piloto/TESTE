@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DETALHES | SENAI</title>
+    <meta name="description" content="Detalhes e inspeção de equipamento - SENAI">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" type="image/png" href="image.png">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        .loading-spinner {
+            animation: spin 1s linear infinite;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div style="display: flex; align-items: center; justify-content: space-between; position: relative;">
+                <a href="javascript:history.back()" style="color: white; z-index: 2;" title="Voltar"><i data-lucide="arrow-left"></i></a>
+                <h1 style="margin: 0; font-size: 1.4rem; position: absolute; left: 50%; transform: translateX(-50%); z-index: 1; white-space: nowrap;">Ficha Técnica</h1>
+                <a href="index.html" style="color: white; z-index: 2;" title="Início"><i data-lucide="home"></i></a>
+            </div>
+        </div>
+    </header>
+
+    <main class="container">
+        <!-- Loading State -->
+        <div id="loading-state" class="card animate-fade" style="text-align: center;">
+            <i data-lucide="loader" class="icon-large loading-spinner"></i>
+            <h2>Carregando...</h2>
+            <p style="color: #666;">Buscando dados do equipamento...</p>
+        </div>
+
+        <!-- Found State -->
+        <div id="found-state" style="display: none;">
+            <div class="card animate-fade">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+                    <i data-lucide="shield-check" class="icon-large" style="margin-bottom: 0;"></i>
+                    <span id="status-badge" class="status-badge status-warning">Pendente</span>
+                </div>
+
+                <h2 id="item-id" style="text-align: left; margin-bottom: 0.5rem; color: var(--senai-primary);"></h2>
+                <p id="item-tipo" style="text-align: left; font-size: 1.2rem; font-weight: 600;"></p>
+                
+                <ul class="details-list">
+                    <li>
+                        <span>Capacidade</span>
+                        <span id="item-capacidade"></span>
+                    </li>
+                    <li>
+                        <span>Localização</span>
+                        <span id="item-localizacao"></span>
+                    </li>
+                    <li>
+                        <span>Última Inspeção</span>
+                        <span id="item-ultima-inspecao"></span>
+                    </li>
+                </ul>
+
+                <button class="btn btn-primary" onclick="openModal()">
+                    <i data-lucide="check-circle-2"></i> Iniciar Inspeção
+                </button>
+                
+                <a href="scanner.html" class="btn" style="background: #eee; color: #333; margin-top: 1rem;">
+                    <i data-lucide="camera"></i> Escanear Outro
+                </a>
+            </div>
+
+            <!-- Modal de Inspeção -->
+            <div id="inspectionModal" class="modal-overlay">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h2 style="font-size: 1.2rem; color: var(--senai-primary);">Checklist de Segurança</h2>
+                        <button onclick="closeInspectionModal()" style="background:none; border:none; cursor:pointer;">
+                            <i data-lucide="x" style="color: #666;"></i>
+                        </button>
+                    </div>
+                    
+                    <div class="inspection-form">
+                        <p style="font-size: 0.9rem; color: #666; margin-bottom: 10px;">Marque a conformidade de cada item:</p>
+                        
+                        <div class="check-item" id="item_lacre">
+                            <span class="check-label" id="label_lacre">1. Lacre intacto</span>
+                            <div class="state-selector">
+                                <div id="btn_ok_lacre" class="state-btn ok-btn" onclick="toggleState('lacre', 'ok')">
+                                    <i data-lucide="check" style="width: 16px;"></i>
+                                </div>
+                                <div id="btn_x_lacre" class="state-btn x-btn" onclick="toggleState('lacre', 'x')">
+                                    <i data-lucide="x" style="width: 16px;"></i>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="check-item" id="item_anel">
+                            <span class="check-label" id="label_anel">2. Anel de identificação</span>
+                            <div class="state-selector">
+                                <div id="btn_ok_anel" class="state-btn ok-btn" onclick="toggleState('anel', 'ok')">
+                                    <i data-lucide="check" style="width: 16px;"></i>
+                                </div>
+                                <div id="btn_x_anel" class="state-btn x-btn" onclick="toggleState('anel', 'x')">
+                                    <i data-lucide="x" style="width: 16px;"></i>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="check-item" id="item_pino">
+                            <span class="check-label" id="label_pino">3. Pino de segurança</span>
+                            <div class="state-selector">
+                                <div id="btn_ok_pino" class="state-btn ok-btn" onclick="toggleState('pino', 'ok')">
+                                    <i data-lucide="check" style="width: 16px;"></i>
+                                </div>
+                                <div id="btn_x_pino" class="state-btn x-btn" onclick="toggleState('pino', 'x')">
+                                    <i data-lucide="x" style="width: 16px;"></i>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="check-item" id="item_inmetro">
+                            <span class="check-label" id="label_inmetro">4. Etiqueta do INMETRO</span>
+                            <div class="state-selector">
+                                <div id="btn_ok_inmetro" class="state-btn ok-btn" onclick="toggleState('inmetro', 'ok')">
+                                    <i data-lucide="check" style="width: 16px;"></i>
+                                </div>
+                                <div id="btn_x_inmetro" class="state-btn x-btn" onclick="toggleState('inmetro', 'x')">
+                                    <i data-lucide="x" style="width: 16px;"></i>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="check-item" id="item_sinalizacao">
+                            <span class="check-label" id="label_sinalizacao">5. Sinalização do local</span>
+                            <div class="state-selector">
+                                <div id="btn_ok_sinalizacao" class="state-btn ok-btn" onclick="toggleState('sinalizacao', 'ok')">
+                                    <i data-lucide="check" style="width: 16px;"></i>
+                                </div>
+                                <div id="btn_x_sinalizacao" class="state-btn x-btn" onclick="toggleState('sinalizacao', 'x')">
+                                    <i data-lucide="x" style="width: 16px;"></i>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="check-item" id="item_recarga">
+                            <span class="check-label" id="label_recarga">6. Validade da recarga</span>
+                            <div class="state-selector">
+                                <div id="btn_ok_recarga" class="state-btn ok-btn" onclick="toggleState('recarga', 'ok')">
+                                    <i data-lucide="check" style="width: 16px;"></i>
+                                </div>
+                                <div id="btn_x_recarga" class="state-btn x-btn" onclick="toggleState('recarga', 'x')">
+                                    <i data-lucide="x" style="width: 16px;"></i>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="check-item" id="item_hidrostatico">
+                            <span class="check-label" id="label_hidrostatico">7. Validade do teste hidrostático</span>
+                            <div class="state-selector">
+                                <div id="btn_ok_hidrostatico" class="state-btn ok-btn" onclick="toggleState('hidrostatico', 'ok')">
+                                    <i data-lucide="check" style="width: 16px;"></i>
+                                </div>
+                                <div id="btn_x_hidrostatico" class="state-btn x-btn" onclick="toggleState('hidrostatico', 'x')">
+                                    <i data-lucide="x" style="width: 16px;"></i>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Área de Observações -->
+                        <div id="observationArea" class="observation-area">
+                            <label style="font-weight: 600; font-size: 0.9rem; color: var(--senai-danger);">
+                                Descreva as irregularidades encontradas:
+                            </label>
+                            <textarea id="observationText" placeholder="Ex: Lacre rompido no extintor da recepção..."></textarea>
+                        </div>
+
+                        <button class="btn btn-primary" style="margin-top: 1rem;" onclick="finishInspection()">
+                            <i data-lucide="save"></i> Finalizar Relatório
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Not Found State -->
+        <div id="not-found-state" style="display: none;">
+            <div class="card animate-fade">
+                <i data-lucide="alert-triangle" class="icon-large" style="color: var(--senai-danger);"></i>
+                <h2>Não Encontrado</h2>
+                <p>O ID <strong id="not-found-id"></strong> não consta no inventário atual da unidade.</p>
+                <div style="margin-top: 2rem; display: flex; flex-direction: column; gap: 1rem;">
+                    <a href="scanner.html" class="btn btn-primary">Tentar Novamente</a>
+                    <a href="index.html" class="btn" style="background: #eee; color: #333;">Voltar ao Dashboard</a>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 SENAI - Gestão de Ativos</p>
+    </footer>
+
+    <script type="module">
+        import { getItem, updateInspection } from './firebase-config.js';
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const itemId = urlParams.get('id') || '';
+        const fromInventory = urlParams.get('from') === 'inventory';
+        
+        let currentItem = null;
+        let currentId = '';
+
+        async function loadItem() {
+            try {
+                const result = await getItem(itemId);
+                
+                if (result) {
+                    currentItem = result.data;
+                    currentId = result.id;
+                    
+                    // Populate the UI
+                    document.getElementById('item-id').textContent = currentId;
+                    document.getElementById('item-tipo').textContent = currentItem.tipo;
+                    document.getElementById('item-capacidade').textContent = currentItem.capacidade;
+                    document.getElementById('item-localizacao').textContent = currentItem.localizacao;
+                    document.getElementById('item-ultima-inspecao').textContent = currentItem.ultima_inspecao;
+                    
+                    // Status badge
+                    const badge = document.getElementById('status-badge');
+                    const isPendente = !currentItem.ultima_inspecao || currentItem.ultima_inspecao === 'Pendente' || !currentItem.responsavel;
+                    
+                    if (isPendente) {
+                        badge.textContent = 'Pendente';
+                        badge.className = 'status-badge status-warning';
+                    } else if (currentItem.status === 'OK') {
+                        badge.textContent = 'OK';
+                        badge.className = 'status-badge status-ok';
+                    } else {
+                        badge.textContent = currentItem.status;
+                        badge.className = 'status-badge status-warning';
+                    }
+                    
+                    // Ocultar botão de escanear se vier do inventário
+                    if (fromInventory) {
+                        const scanBtn = document.querySelector('a[href="scanner.html"]');
+                        if (scanBtn) scanBtn.style.display = 'none';
+                    }
+                    
+                    // Initialize states for inspection modal
+                    if (currentItem.states) {
+                        window.states = { ...currentItem.states };
+                    } else {
+                        window.states = {
+                            lacre: '', anel: '', pino: '', inmetro: '',
+                            sinalizacao: '', recarga: '', hidrostatico: ''
+                        };
+                    }
+                    
+                    document.getElementById('loading-state').style.display = 'none';
+                    document.getElementById('found-state').style.display = 'block';
+                    lucide.createIcons();
+                } else {
+                    document.getElementById('not-found-id').textContent = itemId;
+                    document.getElementById('loading-state').style.display = 'none';
+                    document.getElementById('not-found-state').style.display = 'block';
+                    lucide.createIcons();
+                }
+            } catch (error) {
+                console.error('Erro ao carregar item:', error);
+                document.getElementById('not-found-id').textContent = itemId;
+                document.getElementById('loading-state').style.display = 'none';
+                document.getElementById('not-found-state').style.display = 'block';
+                lucide.createIcons();
+            }
+        }
+
+        loadItem();
+
+        // Expose for global handlers
+        window.currentId = () => currentId;
+        window.updateInspection = updateInspection;
+    </script>
+
+    <script>
+        lucide.createIcons();
+
+        // States object will be set by the module script
+        if (!window.states) {
+            window.states = {
+                lacre: '', anel: '', pino: '', inmetro: '',
+                sinalizacao: '', recarga: '', hidrostatico: ''
+            };
+        }
+        let modifiedKeys = new Set();
+
+        function openModal() {
+            // Ajustar labels e visibilidade conforme o tipo de equipamento
+            const tipo = (document.getElementById('item-tipo').textContent || '').toLowerCase();
+            const allItems = ['lacre', 'anel', 'pino', 'inmetro', 'sinalizacao', 'recarga', 'hidrostatico'];
+            
+            // Resetar tudo para o padrão (Extintor)
+            allItems.forEach(id => {
+                document.getElementById(`item_${id}`).style.display = 'flex';
+                const label = document.getElementById(`label_${id}`);
+                if (id === 'lacre') label.innerText = '1. Lacre intacto';
+                else if (id === 'anel') label.innerText = '2. Anel de identificação';
+                else if (id === 'pino') label.innerText = '3. Pino de segurança';
+                else if (id === 'inmetro') label.innerText = '4. Etiqueta do INMETRO';
+                else if (id === 'sinalizacao') label.innerText = '5. Sinalização do local';
+                else if (id === 'recarga') label.innerText = '6. Validade da recarga';
+                else if (id === 'hidrostatico') label.innerText = '7. Validade do teste hidrostático';
+            });
+
+            if (tipo.includes('hidrante')) {
+                document.getElementById('label_lacre').innerText = '1. Mangueira conforme';
+                document.getElementById('label_anel').innerText = '2. Esguicho conforme';
+                document.getElementById('label_pino').innerText = '3. Chave Storz conforme';
+                document.getElementById('label_sinalizacao').innerText = '4. Sinalização do local';
+                document.getElementById('label_hidrostatico').innerText = '5. Validade do teste hidrostático';
+                document.getElementById('item_inmetro').style.display = 'none';
+                document.getElementById('item_recarga').style.display = 'none';
+                // Marcar campos ocultos como 'ok' automaticamente para não travar a finalização
+                window.states.inmetro = 'ok';
+                window.states.recarga = 'ok';
+            } else if (tipo.includes('rota') || tipo.includes('fuga')) {
+                allItems.forEach(id => {
+                    if (id !== 'lacre' && id !== 'sinalizacao') {
+                        document.getElementById(`item_${id}`).style.display = 'none';
+                        window.states[id] = 'ok';
+                    }
+                });
+                document.getElementById('label_lacre').innerText = '1. Desobstruída conforme';
+                document.getElementById('label_sinalizacao').innerText = '2. Sinalizada conforme';
+            } else if (tipo.includes('porta')) {
+                allItems.forEach(id => {
+                    if (id !== 'lacre' && id !== 'sinalizacao') {
+                        document.getElementById(`item_${id}`).style.display = 'none';
+                        window.states[id] = 'ok';
+                    }
+                });
+                document.getElementById('label_lacre').innerText = '1. Desobstruída conforme';
+                document.getElementById('label_sinalizacao').innerText = '2. Destrancada conforme';
+            } else if (tipo.includes('ponto')) {
+                allItems.forEach(id => {
+                    if (id !== 'sinalizacao') {
+                        document.getElementById(`item_${id}`).style.display = 'none';
+                        window.states[id] = 'ok';
+                    }
+                });
+                document.getElementById('label_sinalizacao').innerText = '1. Sinalizados conforme';
+            }
+
+            // Sync UI with current states
+            Object.keys(window.states).forEach(key => {
+                const state = window.states[key];
+                if (state) {
+                    const okBtn = document.getElementById(`btn_ok_${key}`);
+                    const xBtn = document.getElementById(`btn_x_${key}`);
+                    if (okBtn) okBtn.classList.remove('active');
+                    if (xBtn) xBtn.classList.remove('active');
+                    const targetBtn = document.getElementById(`btn_${state}_${key}`);
+                    if (targetBtn) targetBtn.classList.add('active');
+                }
+            });
+
+            // Check if observation area should be shown
+            const hasMissing = Object.values(window.states).some(s => s === 'x');
+            if (hasMissing) {
+                document.getElementById('observationArea').classList.add('active');
+            }
+
+            document.getElementById('inspectionModal').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeInspectionModal() {
+            document.getElementById('inspectionModal').classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+
+        function toggleState(key, state) {
+            window.states[key] = state;
+            modifiedKeys.add(key);
+            
+            document.getElementById(`btn_ok_${key}`).classList.remove('active');
+            document.getElementById(`btn_x_${key}`).classList.remove('active');
+            document.getElementById(`btn_${state}_${key}`).classList.add('active');
+            
+            const hasMissing = Object.values(window.states).some(s => s === 'x');
+            if (hasMissing) {
+                document.getElementById('observationArea').classList.add('active');
+            } else {
+                document.getElementById('observationArea').classList.remove('active');
+            }
+        }
+
+        async function finishInspection() {
+            const allAnswered = Object.values(window.states).every(s => s !== '');
+            if (!allAnswered) {
+                showModal('Checklist Incompleto', 'Por favor, avalie todos os itens do checklist antes de salvar.', 'warning');
+                return;
+            }
+
+            const hasMissing = Object.values(window.states).some(s => s === 'x');
+            const observation = document.getElementById('observationText').value;
+
+            if (hasMissing && !observation.trim()) {
+                showModal('Observação Obrigatória', 'Como há itens não conformes, descreva as irregularidades encontradas.', 'warning');
+                return;
+            }
+
+            const id = window.currentId();
+            const status = hasMissing ? 'Warning' : 'OK';
+            const inspectorName = localStorage.getItem('inspectorName') || 'Não Informado';
+
+            try {
+                const result = await window.updateInspection(id, {
+                    status: status,
+                    observation: observation,
+                    states: window.states,
+                    modifiedKeys: Array.from(modifiedKeys),
+                    responsavel: inspectorName
+                });
+
+                if (result.success) {
+                    const msg = hasMissing ? 
+                        'Relatório enviado com ressalvas. O setor de manutenção foi notificado.' : 
+                        'Equipamento inspecionado e aprovado! 100% Conforme.';
+                    
+                    const isFromInventory = new URLSearchParams(window.location.search).get('from') === 'inventory';
+                    
+                    if (isFromInventory) {
+                        showModal('Inspeção Salva', msg, 'success', 'alert', () => {
+                            window.location.href = 'inventory.html';
+                        });
+                    } else {
+                        showModal('Inspeção Salva', msg + ' Deseja escanear outro equipamento?', 'success', 'confirm', (confirmed) => {
+                            closeInspectionModal();
+                            if (confirmed) {
+                                window.location.href = 'scanner.html';
+                            } else {
+                                window.location.href = 'inventory.html';
+                            }
+                        });
+                    }
+                } else {
+                    showModal('Erro', 'Erro ao salvar inspeção: ' + (result.message || 'Erro desconhecido.'), 'error');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                showModal('Erro', 'Erro na comunicação com o servidor: ' + error.message, 'error');
+            }
+        }
+
+        function showModal(title, message, icon = 'info', type = 'alert', onConfirm = null) {
+            const modal = document.getElementById('customModal');
+            const titleEl = document.getElementById('modalTitle');
+            const messageEl = document.getElementById('modalMessage');
+            const iconEl = document.getElementById('modalIcon');
+            const confirmBtn = document.getElementById('modalConfirmBtn');
+            const cancelBtn = document.getElementById('modalCancelBtn');
+
+            titleEl.innerText = title;
+            messageEl.innerText = message;
+            
+            let iconHtml = '';
+            if (icon === 'success') iconHtml = '<i data-lucide="check-circle-2" style="width: 48px; height: 48px; color: #28a745;"></i>';
+            else if (icon === 'error') iconHtml = '<i data-lucide="alert-circle" style="width: 48px; height: 48px; color: #dc3545;"></i>';
+            else if (icon === 'warning') iconHtml = '<i data-lucide="alert-triangle" style="width: 48px; height: 48px; color: #f39c12;"></i>';
+            else iconHtml = '<i data-lucide="info" style="width: 48px; height: 48px; color: #007bff;"></i>';
+            
+            iconEl.innerHTML = iconHtml;
+            lucide.createIcons();
+
+            if (type === 'confirm') {
+                cancelBtn.style.display = 'flex';
+                confirmBtn.innerText = 'Confirmar';
+            } else {
+                cancelBtn.style.display = 'none';
+                confirmBtn.innerText = 'OK';
+            }
+
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+
+            const close = () => {
+                modal.classList.remove('active');
+                document.body.style.overflow = 'auto';
+            };
+
+            confirmBtn.onclick = () => {
+                close();
+                if (onConfirm) onConfirm(true);
+            };
+
+            cancelBtn.onclick = () => {
+                close();
+                if (onConfirm) onConfirm(false);
+            };
+        }
+    </script>
+
+    <!-- Modal Genérico -->
+    <div id="customModal" class="modal-overlay">
+        <div class="modal-content" style="max-width: 400px; text-align: center;">
+            <div id="modalIcon" style="margin-bottom: 1rem; display: flex; justify-content: center;"></div>
+            <h2 id="modalTitle" style="font-size: 1.4rem; color: var(--senai-primary); margin-bottom: 0.5rem;"></h2>
+            <p id="modalMessage" style="color: #666; margin-bottom: 1.5rem;"></p>
+            <div id="modalActions" style="display: flex; gap: 10px; flex-direction: column;">
+                <button id="modalConfirmBtn" class="btn btn-primary" style="margin-top: 0;">Confirmar</button>
+                <button id="modalCancelBtn" class="btn" style="background: #eee; color: #333; display: none; margin-top: 0;">Cancelar</button>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
